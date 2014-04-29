@@ -8,10 +8,10 @@ my @tables = map {
     my $scheme;
     if (-e $_) {
         # file
-        my $create_table = slurp($_);
+        my $file = $_;
         my $tmp_dbname = join '_', 'tmp', time();
         system(qw/mysqladmin -uroot create/, $tmp_dbname);
-        system('mysql', '-uroot', $tmp_dbname, '-e', $create_table);
+        `mysql -uroot $tmp_dbname < $file`;
         my @cmd = (qw/mysqldump -uroot --no-data=true/, $tmp_dbname);
         $scheme = `@cmd`;
         system(qw/mysql -uroot/, $tmp_dbname, '-e', "drop database $tmp_dbname");
